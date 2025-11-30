@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  agentic-analyst:
+    build: .
+    image: agentic-analyst:latest
+    container_name: agentic-analyst
+    stdin_open: true
+    tty: true
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=${OPENAI_MODEL:-gpt-5}
+    volumes:
+      # Mount outputs directory to persist generated files
+      - ./outputs:/app/outputs
+      # Optional: mount custom CSV files
+      - ./case_study_germany_sample.csv:/app/case_study_germany_sample.csv
+      - ./case_study_germany_treatment_costs_sample.csv:/app/case_study_germany_treatment_costs_sample.csv
+    working_dir: /app
+

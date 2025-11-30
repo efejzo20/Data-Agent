@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv
+.env
+outputs/
+.vscode/
+.idea/
+*.swp
+.DS_Store
