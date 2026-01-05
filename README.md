@@ -129,5 +129,3 @@ The current implementation of file saving is functional but not very smart. In s
     - Save files directly without clear user intent, or
     - Save more artifacts than necessary (e.g. all intermediate results instead of just the final output)
 
-This can definitely be improved by adding more explicit control over what gets saved and when, but due to time constraints I did not refine this behavior further in this iteration.
-
