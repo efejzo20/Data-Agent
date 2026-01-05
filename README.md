@@ -106,23 +106,6 @@ This tool uses **OpenAI's function calling** with two specialized tools:
 - **Production-ready** - Docker support, error handling, beautiful UX
 
 
-
-# How I Approached the Problem
-I understood the core requirement as building an agent that you can talk to about data stored in structured formats, specifically CSV files. Since the data is already structured, I decided that the most robust way to work with it is through code (e.g., pandas), rather than using a RAG-style approach that would be better suited for unstructured formats like PDFs.
-
-The first design decision was to use an LLM that can call tools. I needed at least one tool that could execute Python code against the loaded CSVs. That part was straightforward: the LLM generates code, and the tool runs it. The less obvious part was how to handle saving outputs, whether saving should be a separate tool or part of the same execution tool. I chose to keep it together in one tool that both executes the code and handles saving results. My reasoning was that, within a single run, the LLM is already “thinking” about the code and the files it produces, so combining execution and saving keeps the flow simpler. I still designed it so that this behaviour can be refactored or extended later.
-
-Next, I implemented a sandbox for running the generated code. Initially, I restricted imports to avoid arbitrary libraries and limit what the LLM could do (for safety and control). Since this is a first-step implementation, I later relaxed this slightly to support the necessary imports, noting that in a future iteration we could harden the sandbox further and isolate execution more strictly.
-
-For the agent execution loop, I assumed the LLM would sometimes make mistakes, so it needs a way to iterate and self-correct. I pass any errors from the sandbox back to the LLM and let it refine the code. I run this in a loop of up to seven iterations until a valid result is produced or the attempts are exhausted. Once the code runs successfully, I send the resulting data and metadata back to the LLM so it can generate a final, user-friendly answer.
-
-I also added a separate output-transformation tool. This tool handles cases where the LLM has already generated data and stored it in memory, and the user later asks to export or transform it. For example, saving it, converting it to another file format, or applying translations, without re-parsing the original CSV.
-
-On the UX side, I used the rich library to make the CLI output more readable. I show each step to the user: which tool the LLM used, which CSVs were involved, and whether there were errors. This helps make the agent’s behaviour transparent.
-
-Finally, to make the project easy to run on different machines, I added a Docker setup so the environment and dependencies are consistent across systems.
-
-
 # Limitations & Trade-offs
 - **In-memory, file-based analytics**: The agent loads CSVs into pandas DataFrames in a single Python process. This works well up to tens of thousands of rows, but very large files (hundreds of MBs / millions of rows) would be better served by a database or query engine (e.g. Postgres, DuckDB, BigQuery) and/or SQL generation instead of pure in-memory pandas.
 
