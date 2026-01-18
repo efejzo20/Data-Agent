@@ -127,5 +127,5 @@ This tool uses **OpenAI's function calling** with two specialized tools:
 - File saving behavior is still rough
 The current implementation of file saving is functional but not very smart. In some cases, the agent may attempt to:
     - Save files directly without clear user intent, or
-    - Save more artifacts than necessary (e.g. all intermediate results instead of just the final output).
+    - Save more artifacts than necessary (e.g. all intermediate results instead of just the final output)
 
